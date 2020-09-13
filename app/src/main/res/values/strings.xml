@@ -2,5 +2,5 @@
     <string name="app_name">Search00</string>
     <string name="form_default">てきすとをにゅうりょく</string>
     <string name="search_button">けんさく</string>>
-
+    <string name="result_text">ボタンを押しました</string>
 </resources>
