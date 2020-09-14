@@ -2,12 +2,16 @@ package com.example.search00
 
 
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import com.example.search00.databinding.FragmentMainBinding
+import kotlinx.android.synthetic.main.fragment_main.*
+import kotlin.concurrent.thread
 
 
 class MainFragment : Fragment() {
@@ -29,6 +33,28 @@ class MainFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val handler = Handler()
+
+        // メインスレッドだと動かない
+        thread {
+            try {
+                val response = APIClient.fetchReposList()
+                val firstRepos = response.body()!![0]
+
+                // handlerでUIを動かす
+                handler.post(Runnable {
+                    name_text.text = firstRepos.name
+                    description_text.text = firstRepos.description
+                    language_text.text = firstRepos.language
+                    url_text.text = firstRepos.url
+                })
+
+                Log.d("retrofit", "Repository ID" + response.body())
+            } catch (e: Exception) {
+                Log.w("retrofit", "fetchReposList :" + e)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
